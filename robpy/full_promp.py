@@ -609,7 +609,7 @@ class FullProMP:
             b = np.dot(Sw, np.dot(inv_Sig_w, self.mu_w))
             mu_w = np.dot(A, mu_q) + b
             if Sigma_q is not None:
-                Sigma_w = Sw + np.dot(A,np.dot(params['Sigma_q'],A.T))
+                Sigma_w = Sw + np.dot(A,np.dot(Sigma_q,A.T))
             else:
                 Sigma_w = Sw
 

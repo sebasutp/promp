@@ -26,7 +26,15 @@ the adaptation operators in C++ (They are also provided in Python). We also prov
 Code Examples
 -------------
 
-#### A very simple example
+Please refer to the example folder in the repository. We just show a simple example
+that illustrates how to use the API in general. 
+
+### A very simple example
+
+The following example loads a dataset of strike trajectories from a file called 
+"strike_mov.npz" and trains a ProMP with the given trajectories. The example
+file is provided as part of the repository. Subsequently, the script draws samples
+from the learned ProMP and a ProMP conditioned to start at a particular location.
 
 ```
 import robpy.full_promp as promp
@@ -77,12 +85,39 @@ robot_promp.condition(t=0, T=1, q=q_cond_init, ignore_Sy=False)
 cond_samples = robot_promp.sample(sample_time)
 ```
 
-Please refer to the example folder in the repository. We mention some of the example files
-here along with what exactly the example shows:
+### Using task space conditioning
 
-#### A toy example
+In order to use task space conditioning you need to implement the forward kinematics of your own robot.
+You simply need to implement a class with a method called "position_and_jac(q)" that given a joint space
+configuration q produces a tuple (x, jac, ori) representing respectively the cartesian position, the
+jacobian and the orientation. We provide an example of the implementation of the kinematics of a Barrett
+WAM arm. The following example shows how to condition a ProMP in task space using the Barrett forward
+kinematics implementation.
 
-The file "examples/python_promp/toy_example.py" 
+```
+import robpy.kinematics.forward as fwd
+
+# Compute the prior distribution in joint space at the desired time
+time_cartesian = 0.9
+mean_marg_w, cov_marg_w = robot_promp.marginal_w(np.array([0.0,time_cartesian,1.0]), q=True)
+prior_mu_q = mean_marg_w[1]
+prior_Sigma_q = cov_marg_w[1]
+
+# Compute the posterior distribution in joint space after conditioning in task space
+fwd_kin = fwd.BarrettKinematics()
+prob_inv_kin = promp.ProbInvKinematics(fwd_kin)
+
+mu_cartesian = np.array([-0.62, -0.44, -0.34])
+Sigma_cartesian = 0.02**2*np.eye(3) 
+
+mu_q, Sigma_q = prob_inv_kin.inv_kin(mu_theta=prior_mu_q, sig_theta=prior_Sigma_q,
+        mu_x = mu_cartesian, sig_x = Sigma_cartesian)
+
+# Finally, condition in joint space using the posterior joint space distribution
+
+robot_promp.condition(t=time_cartesian, T=1.0, q=mu_q, Sigma_q=Sigma_q, ignore_Sy=False)
+task_cond_samples = robot_promp.sample(sample_time)
+```
 
 Publications
 ------------
