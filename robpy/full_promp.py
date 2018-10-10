@@ -588,7 +588,9 @@ class FullProMP:
         uncertainty on the conditioned point pass it as the optional matrices Sigma_q,
         Sigma_qd.
         """
-        phi_t = self.__get_Phi([[0,t,T]], q=True)[0][1]
+        times = [[0,t,T]]
+        _Phi = self.__get_Phi(times, basis_params=self.get_basis_pars())
+        phi_t = _Phi[0][1]
         d,lw = phi_t.shape
         mu_q = self.__get_y_t(q=q)
         if ignore_Sy:

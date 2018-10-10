@@ -13,6 +13,7 @@ import os
 import matplotlib.pyplot as plt
 import json
 
+print promp.__file__
 
 full_basis = {
         'conf': [
@@ -26,7 +27,7 @@ w_dim = dof*dim_basis_fun
 
 p = promp.FullProMP(num_joints=1, basis=full_basis)
 p.mu_w = np.zeros(w_dim)
-p.Sigma_w = 1e8*np.eye(w_dim)
+p.Sigma_w = 1e2*np.eye(w_dim)
 p.Sigma_y = 1e-4*np.eye(dof)
 
 n_samples = 5 # Number of samples to draw
@@ -51,7 +52,7 @@ p.Sigma_w = e_step['w_covs'][0]
 e_step_cond_samples = p.sample(sample_time)
 
 for i in range(n_samples):
-    #plt.plot(sample_time[i], recursive_cond_samples[i][:,0], color='green')
+    plt.plot(sample_time[i], recursive_cond_samples[i][:,0], color='green')
     plt.plot(sample_time[i], e_step_cond_samples[i][:,0], color='blue')
 plt.title('Samples of the conditioned ProMPs')
 plt.show()

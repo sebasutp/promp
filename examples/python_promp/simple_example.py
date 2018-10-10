@@ -25,7 +25,7 @@ robot_promp = promp.FullProMP(basis=full_basis)
 
 dof = 7
 dim_basis_fun = 5
-inv_whis_mean = lambda v, Sigma: utils.make_block_diag(Sigma, dof)
+inv_whis_mean = lambda v, Sigma: 9e-1*utils.make_block_diag(Sigma, dof) + 1e-1*np.eye(dof*dim_basis_fun)
 prior_Sigma_w = {'v':dim_basis_fun*dof, 'mean_cov_mle': inv_whis_mean}
 train_summary = robot_promp.train(time, q=Q, max_iter=10, prior_Sigma_w=prior_Sigma_w,
         print_inner_lb=True)
