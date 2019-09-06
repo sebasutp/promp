@@ -130,6 +130,7 @@ Conference on Humanoid Robots, 2016](https://ieeexplore.ieee.org/abstract/docume
 
 Please refer to these papers to understand our implementation, get general information about
 probabilistic movement primitives and see the evaluation of the implemented methods in real
-robotic platforms.
-
+robotic platforms. We also have a [C++ implementation](https://github.com/sebasutp/promp-cpp) of
+the ProMP conditioning in joint and task space and other operators that might require real-time
+execution performance.
 
